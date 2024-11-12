@@ -61,7 +61,7 @@ public class SThread extends Thread {
 				double wallClockTimeSec = (endTime - startTime) / 1000.0; // Time in seconds
 
 				String wallClockTimeOut = "Wall Clock Time (ms): " + wallClockTime + " ms";
-				String wallClockTimeSecOut = "Wall Clock Time (ms): " + wallClockTimeSec + " seconds";
+				String wallClockTimeSecOut = "Wall Clock Time: " + wallClockTimeSec + " seconds";
 
 				System.out.println(wallClockTimeOut);
 				System.out.println(wallClockTimeSecOut);
