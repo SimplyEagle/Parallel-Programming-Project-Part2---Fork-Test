@@ -29,10 +29,10 @@ public class SThread extends Thread {
 	public void run() {
 		try {
 			System.out.println("Handling client at index " + index);
-
+			long startTime = System.currentTimeMillis();
 			// Process client requests and responses here
 			while (true) {
-				System.out.println("Waiting for matrices from client...");
+				System.out.println("\nWaiting for matrices from client...");
 				// Read two matrices input from client
 				int[][] matrix1 = (int[][]) inStream.readObject();
 				int[][] matrix2 = (int[][]) inStream.readObject();
@@ -43,7 +43,7 @@ public class SThread extends Thread {
 				printMatrix(matrix2);
 
 				// Perform matrix multiplication with threadCount
-				System.out.println("Attempting matrix multiplication.");
+				System.out.println("\nAttempting matrix multiplication.");
 				StrassenMatrixMulti matrixMultiplier = new StrassenMatrixMulti(threadCount);
 				int[][] result = matrixMultiplier.multiply(matrix1, matrix2);
 				System.out.println("Matrix multiplication complete.");
@@ -52,14 +52,43 @@ public class SThread extends Thread {
 				System.out.println("Sending result to client...");
 				outStream.writeObject(result);
 				outStream.flush();  // Ensure data is actually sent to the client
+				long endTime = System.currentTimeMillis();
 				System.out.println("Result sent to client:");
-
 				printMatrix(result);
+				System.out.println();
+
+				double wallClockTime = (endTime - startTime); // Time in ms
+				double wallClockTimeSec = (endTime - startTime) / 1000.0; // Time in seconds
+
+				String wallClockTimeOut = "Wall Clock Time (ms): " + wallClockTime + " ms";
+				String wallClockTimeSecOut = "Wall Clock Time (ms): " + wallClockTimeSec + " seconds";
+
+				System.out.println(wallClockTimeOut);
+				System.out.println(wallClockTimeSecOut);
+				outStream.writeObject(wallClockTimeOut);
+				outStream.flush();
+				outStream.writeObject(wallClockTimeSecOut);
+				outStream.flush();
+
+				double sequentialTime = 60; // Replace with actual measured sequential time in ms
+				double speedup = sequentialTime / wallClockTime;
+				double efficiency = speedup / threadCount;
+
+				String speedupOut = "Speedup: " + speedup;
+				String efficiencyOut = "Efficiency: " + (efficiency * 100) + "%";
+
+				System.out.println(speedupOut);
+				System.out.println(efficiencyOut);
+				outStream.writeObject(speedupOut);
+				outStream.flush();
+				outStream.writeObject(efficiencyOut);
+				outStream.flush();
 			}
 		} catch (IOException | ClassNotFoundException e) {
+			// Also caught when client disconnects.
 			System.out.println("Connection error with client at index " + index + ": " + e.getMessage());
 		} finally {
-			// Clean up resources
+			// Clean up
 			try {
 				inStream.close();
 				outStream.close();

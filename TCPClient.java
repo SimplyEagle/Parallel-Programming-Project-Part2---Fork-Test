@@ -27,12 +27,23 @@ public class TCPClient {
             printMatrix(matrixB);
             out.writeObject(matrixB);
             out.flush();
+            System.out.println();
 
             // Receive the result from the server
             System.out.println("Waiting for reply.");
             int[][] result = (int[][]) in.readObject();
             System.out.println("Result received from server:");
             printMatrix(result);
+            System.out.println();
+
+            String[] metrics = new String[4];
+            for (int i = 0; i < metrics.length; i++) {
+                metrics[i] = (String) in.readObject();
+            }
+
+            for (String str : metrics) {
+                System.out.println(str);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,7 +1,7 @@
 // There are lots of debugging comments as I could not find the problems.
-// You may comment them out or remove if needed. I have my copy.
-// The "depth" param in Strassen method is removable. I used in debug.
-// ForkJoinPool utilizes work-stealing between the threads.
+// You may comment them out or remove if needed - I have my copy.
+// The "depth" param in Strassen methods is removable. I used in debug.
+// ForkJoinPool utilizes work-stealing between the threads to prevent blocking and other problems.
 
 import java.util.concurrent.*;
 
@@ -49,9 +49,8 @@ public class StrassenMatrixMulti {
             // I kept getting weird results but adding a secondary base case fixed it? If it works, it works.
             int newSize = size / 2;
             if (newSize == 1) {
-                // This prevents an infinite recursion issue
                 System.out.println("Recursion depth " + depth + ": Performing direct multiplication");
-                return multiplyDirectly(A, B);  // Base case for recursion, or handle the base case directly
+                return multiplyDirectly(A, B);
             }
 
             // Divide matrices into submatrices
@@ -99,7 +98,8 @@ public class StrassenMatrixMulti {
                 e.printStackTrace();
             }
 
-            // Combine the results for Strassen
+            // Combine the results for Strassen. Add/Subtract method because using an int[][] as return.
+            // They just for-each loop the 2x2 and add/subtract each.
             System.out.println("Recursion depth " + depth + ": Combining results");
             int[][] C11 = add(subtract(add(results[0], results[3]), results[4]), results[6]);
             int[][] C12 = add(results[2], results[4]);
@@ -132,7 +132,7 @@ public class StrassenMatrixMulti {
         return result;
     }
 
-    // Utility methods for splitting, adding, subtracting matrices
+    // Helper methods for splitting, joining, adding, subtracting matrices
     private void split(int[][] source, int[][] target, int row, int col) {
         int n = target.length;
         for (int i = 0; i < n; i++) {

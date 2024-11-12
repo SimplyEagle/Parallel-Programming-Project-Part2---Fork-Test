@@ -33,7 +33,7 @@ public class TCPServerRouter {
         try {
             String serverHost = "localhost";
             int serverPort = 5556; // Port that the TCPServer is listening on
-            // Can be 5555 is multiple machines. Needs to be different if localhost because port closed.
+            // Can be 5555 on multiple machines. Needs to be different if localhost because port is unavailable.
 
             Socket serverSocket = new Socket(serverHost, serverPort);
             System.out.println("Forwarding request to TCPServer at " + serverHost + " on port " + serverPort);

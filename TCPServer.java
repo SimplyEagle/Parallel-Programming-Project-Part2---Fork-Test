@@ -2,13 +2,24 @@ import java.io.*;
 import java.net.*;
 import java.util.concurrent.*;
 
+
+// Measurements print at the top when run.
+// Need to update sequential time to what we measured in Part1? For proper speedup calc and thus efficiency.
+
 public class TCPServer {
     private static final int portNumber = 5556; // Port for the TCPServer to listen on
-    // Can be 5555 is multiple machines. Needs to be different if localhost because port closed.
+    // Can be 5555 on multiple machines. Needs to be different if localhost because port closed.
+
+    // I made this threaded at one point. Now if I remove it every thing breaks.
+    // I assigned it one thread so it's "serial".
     private static ForkJoinPool forkJoinPool;
+
     private static Object[][] routingTable;
     private StrassenMatrixMulti matrixMultiplier;
     private static int currentIndex = 0;
+    double sequentialTime;
+    double speedup;
+    double efficiency;
 
     public static void main(String[] args) {
         int threadCount = 4; // Set the number of threads in the pool. 1, 2, 15, 31, etc
@@ -26,6 +37,9 @@ public class TCPServer {
                 int clientIndex = addClient(clientSocket);
                 forkJoinPool.submit(new SThread(clientSocket, routingTable, clientIndex, threadCount));
             }
+
+
+
         } catch (IOException e) {
             System.err.println("Could not listen on port " + portNumber);
             e.printStackTrace();
