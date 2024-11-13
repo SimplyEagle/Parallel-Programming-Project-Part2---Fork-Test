@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.Scanner;
 import java.util.concurrent.*;
 
 
@@ -25,20 +26,29 @@ public class TCPServer {
         int threadCount = 4; // Set the number of threads in the pool. 1, 2, 15, 31, etc
         forkJoinPool = new ForkJoinPool(1);
         routingTable = new Object[10][2];
+        boolean running = true;
+        Scanner sc = new Scanner(System.in);
 
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
             System.out.println("TCPServer started and listening on port " + portNumber);
 
-            while (true) {
+            while (running) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Client connected from " + clientSocket.getInetAddress().getHostAddress());
 
                 // Forward the connection to a new thread for handling
                 int clientIndex = addClient(clientSocket);
                 forkJoinPool.submit(new SThread(clientSocket, routingTable, clientIndex, threadCount));
+
+                System.out.println();
+                String input = sc.next().toLowerCase();
+                if (input.equals("exit")) {
+                    clientSocket.close();
+                    serverSocket.close();
+                    running = false;
+                }
+                running = false;
             }
-
-
 
         } catch (IOException e) {
             System.err.println("Could not listen on port " + portNumber);

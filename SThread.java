@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.Scanner;
 
 public class SThread extends Thread {
 	private Socket clientSocket;
@@ -31,7 +32,9 @@ public class SThread extends Thread {
 			System.out.println("Handling client at index " + index);
 			long startTime = System.currentTimeMillis();
 			// Process client requests and responses here
-			while (true) {
+			boolean running = true;
+
+			while (running) {
 				System.out.println("\nWaiting for matrices from client...");
 				// Read two matrices input from client
 				int[][] matrix1 = (int[][]) inStream.readObject();
@@ -83,6 +86,8 @@ public class SThread extends Thread {
 				outStream.flush();
 				outStream.writeObject(efficiencyOut);
 				outStream.flush();
+				running = false;
+				System.out.println("Type exit to exit. Else press Enter.");
 			}
 		} catch (IOException | ClassNotFoundException e) {
 			// Also caught when client disconnects.

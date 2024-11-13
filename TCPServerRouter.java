@@ -17,7 +17,6 @@ public class TCPServerRouter {
 
                     // Forward the connection to TCPServer for processing
                     forwardToTCPServer(clientSocket);
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -32,7 +31,7 @@ public class TCPServerRouter {
     private static void forwardToTCPServer(Socket clientSocket) {
         try {
             String serverHost = "localhost";
-            int serverPort = 5556; // Port that the TCPServer is listening on
+            int serverPort = 5500; // Port that the TCPServer is listening on
             // Can be 5555 on multiple machines. Needs to be different if localhost because port is unavailable.
 
             Socket serverSocket = new Socket(serverHost, serverPort);
